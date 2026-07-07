@@ -2,16 +2,28 @@ import userModel from "../models/user.model.js";
 import { config } from '../config/config.js'
 import jwt from 'jsonwebtoken'
 
-async function sendResToken(res, user){
+async function sendResToken(res, user, message){
     const token = jwt.sign({
         id: user._id
     }, config.JWT_SECRET, { expiresIn: "7d" })
 
     res.cookie("token", token)
+
+    res.status(200).json({
+      message,
+      success: true,
+      user: {
+        id: user._id,
+        email: user.email,
+        contact: user.contact,
+        fullname: user.fullname,
+        role: user.role
+      }
+    })
 }
 
 export async function registerController(req, res) {
-  const { email, contact, fullname, password } = req.body;
+  const { email, contact, fullname, password, isSeller } = req.body;
 
   try {
     const existingUser = await userModel.findOne({
@@ -29,14 +41,10 @@ export async function registerController(req, res) {
         contact,
         fullname,
         password,
+        role: isSeller ? "seller" : "buyer"
     })
 
-    sendResToken(res, user)
-
-    return res.status(201).json({
-        message: "User registered successfully",
-        success: true
-    })
+    await sendResToken(res, user, "User registered successfully.")
 
   } catch (err) {
     return res.status(400).json({
@@ -45,4 +53,8 @@ export async function registerController(req, res) {
         err: err.message
     })
   }
+}
+
+export async function loginController(req, res) {
+  
 }

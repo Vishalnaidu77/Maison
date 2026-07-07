@@ -32,5 +32,8 @@ export const registerValidation = [
         .isLength({ min: 6 }).withMessage("Password must be at least 6 characters long")
         .matches(/[A-Z]/).withMessage("Password must contain at least one uppercase letter"),
 
+    body("isSeller")
+        .isBoolean().withMessage("isSeller must be Boolean"),
+        
     validate
 ]
