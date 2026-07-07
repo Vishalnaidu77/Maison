@@ -1,9 +1,13 @@
 import React from 'react'
+import { RouterProvider } from 'react-router'
+import { router } from './app.routes'
 
 const App = () => {
+
   return (
-    <div className='text-5xl text-orange-400'>Jai Shree Ram</div>
+    <RouterProvider router={router} />
   )
+  
 }
 
 export default App
