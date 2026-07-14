@@ -41,5 +41,29 @@ export async function addProductController(req, res) {
 }
 
 export async function getAllProducts(req, res) {
+    try {
+        const seller = req.user
     
+        const products = await productModel.find({ seller: seller._id })
+        if(!products){
+            return res.status(404).json({
+                message: "Products not found by this seller",
+                success: false,
+                err: "Products not found"
+            })
+        }
+    
+        return res.status(200).json({
+            message: "Fetch all products",
+            success: true,
+            products
+        })
+
+    } catch (err) {
+        return res.status(400).json({
+            message: "Unexpected error",
+            success: false,
+            err: err.message
+        })
+    }
 }
