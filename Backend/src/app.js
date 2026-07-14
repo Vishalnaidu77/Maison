@@ -4,11 +4,14 @@ import authRouter from "./routes/auth.routes.js";
 import passport from 'passport'
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20'
 import { config } from "./config/config.js";
+import productRouter from "./routes/product.route.js";
+import CookieParser from 'cookie-parser'
 
 const app = express();
 
 app.use(morgan("dev"));
 app.use(express.json());
+app.use(CookieParser())
 app.use(express.urlencoded({ extended: true }));
 app.use(passport.initialize())
 
@@ -25,5 +28,6 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/auth", authRouter);
+app.use("/api/product", productRouter)
 
 export default app;
