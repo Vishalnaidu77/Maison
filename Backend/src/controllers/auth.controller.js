@@ -111,3 +111,30 @@ export async function googleCallback(req, res) {
 
   res.redirect("http://localhost:5173/")
 }
+
+export async function getMeController(req, res) {
+  try {
+    const userId = req.userId
+  
+    const user = await userModel.findById(userId)
+    if(!user){
+      return res.status(404).json({
+        message: "User not found",
+        success: false,
+        err: "User not founc"
+      })
+    }
+
+    return res.status(200).json({
+      message: "User fetch successfully",
+      success: true,
+      user
+    })
+  } catch (err) {
+    return res.status(400).json({
+      message: "Unexpected error",
+      success: false,
+      err: err.message
+    })
+  }
+}

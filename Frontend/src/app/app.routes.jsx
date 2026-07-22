@@ -3,11 +3,14 @@ import Login from "../features/auth/pages/Login";
 import Register from "../features/auth/pages/Register";
 import CreateProduct from "../features/products/Pages/CreateProduct";
 import SellerProductList from "../features/products/Pages/SellerProductList";
+import Protected from "./Protected";
 
 export const router = createBrowserRouter([
     {
         path: "/",
-        element: <h1>Radhe Radhe</h1>
+        element: <Protected>
+                <h1>Radhe Radhe</h1>
+            </Protected>
     },
     {
         path: "/register",
@@ -18,11 +21,15 @@ export const router = createBrowserRouter([
         element: <Login />
     },
     {
-        path: "/seller/products/create",
-        element: <CreateProduct />
+        path: "/seller/dashboard/add-product",
+        element: <Protected role="seller">
+            <CreateProduct />
+            </Protected>
     },
     {
-        path: "/seller/products",
-        element: <SellerProductList />
+        path: "/seller/dashboard/products",
+        element: <Protected role="seller">
+                <SellerProductList />
+            </Protected>
     }
 ])

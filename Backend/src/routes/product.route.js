@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { addProductController, getAllProducts } from '../controllers/product.controller.js';
-import { verifySeller } from '../middleware/auth.middleware.js';
+import { verifySeller, verifyUser } from '../middleware/auth.middleware.js';
 import multer, { memoryStorage } from 'multer'
 
 const productRouter = Router()

@@ -46,3 +46,39 @@ export async function verifySeller(req, res, next) {
         })
     }
 }
+
+export async function verifyUser(req, res, next){
+    const token = req.cookies.token
+
+    if(!token){
+        return res.status(400).json({
+            message: "Missing Token",
+            success: false,
+            err:"Missing token"
+        })
+    }
+
+    let decoded;
+
+    try {
+        decoded = jwt.verify(token, config.JWT_SECRET)
+        const user = await userModel.findById(decoded.id)
+
+        if(!user){
+            return res.status(404).json({
+                message: "Unauthorized user",
+                success: false,
+                err: "Unauthorized user"
+            })
+        }
+
+        req.userId = user._id
+        next()
+    } catch (err) {
+        return res.status(400).json({
+            message: "Unexpected error",
+            success: false,
+            err: err.message
+        })
+    }
+}

@@ -14,8 +14,9 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    await handleLogin(email, password)
-    navigate("/")
+    const user = await handleLogin(email, password)
+    if(user.role === "seller") navigate("/seller/dashboard/products")
+    else navigate("/")
 
     setEmail("")
     setPassword("")
