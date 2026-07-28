@@ -1,12 +1,17 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const ProductCard = ({ product }) => {
   const coverImage = product?.images?.[0]?.url;
   const amount = product?.price?.amount;
   const currency = product?.price?.currency || 'INR';
 
+  const navigate = useNavigate()
+
   return (
-    <article className="group overflow-hidden rounded-[1.75rem] border border-gray-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-black/5 cursor-pointer">
+    <article
+      onClick={() => navigate(`/product/${product._id}`)}
+      className="group overflow-hidden rounded-[1.75rem] border border-gray-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-black/5 cursor-pointer">
       <div className="relative aspect-[4/5] overflow-hidden bg-gray-100">
         {coverImage ? (
           <img

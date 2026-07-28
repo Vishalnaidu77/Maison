@@ -5,13 +5,12 @@ import CreateProduct from "../features/products/Pages/CreateProduct";
 import SellerProductList from "../features/products/Pages/SellerProductList";
 import Protected from "./Protected";
 import Home from "../features/products/Pages/Home";
+import ProductDetails from "../features/products/Pages/ProductDetails";
 
 export const router = createBrowserRouter([
     {
         path: "/",
-        element: <Protected>
-                <Home />
-            </Protected>
+        element: <Home />
     },
     {
         path: "/register",
@@ -32,5 +31,9 @@ export const router = createBrowserRouter([
         element: <Protected role="seller">
                 <SellerProductList />
             </Protected>
+    },
+    {
+        path: "product/:productId",
+        element: <ProductDetails />
     }
 ])
