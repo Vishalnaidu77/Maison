@@ -19,3 +19,22 @@ export const getAllProducts = async () => {
     const res = await productApiInstance.get("/")
     return res.data
 }
+
+export const editProduct = async (productDetails) => {
+    const res = await productApiInstance.patch(`/edit-product/${productDetails._id}`, productDetails)
+    return res.data
+}
+
+export const getProductDetails = async (productId) => {
+    const res = await productApiInstance.get(`seller-product/${productId}`)
+    return res.data
+}
+
+export const addVariant = async (productId, formData) => {
+    const res = await productApiInstance.post(`/add-variants/${productId}`, formData, {
+        headers: {
+            "Content-Type": "multipart/form-data"
+        }
+    })
+    return res.data
+}

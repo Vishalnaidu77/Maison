@@ -18,6 +18,16 @@ const productSlice = createSlice({
         setSellerProductToList: (state, action) => {
             state.sellerProduct.push(action.payload)
         },
+        setEditProduct: (state, action) => {
+            const index = state.products.findIndex(p => p._id === action.payload._id)
+            if(index !== -1){
+                state.products[index] = action.payload
+            }
+            const sIndex = state.sellerProduct.findIndex(p => p._id === action.payload._id)
+            if(sIndex !== -1){
+                state.sellerProduct[sIndex] = action.payload
+            }
+        },
         setLoading: (state, action) => {
             state.isLoading = action.payload
         },
@@ -27,5 +37,5 @@ const productSlice = createSlice({
     }
 })
 
-export const { setProducts, setError, setLoading, setSellerProducts, setSellerProductToList } = productSlice.actions
+export const { setProducts, setError, setLoading, setSellerProducts, setSellerProductToList, setEditProduct } = productSlice.actions
 export default productSlice.reducer

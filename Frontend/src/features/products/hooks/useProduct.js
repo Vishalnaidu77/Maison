@@ -1,7 +1,7 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
-import { setError, setLoading, setProducts, setSellerProducts, setSellerProductToList } from '../product.slice'
-import { addProduct, getAllProducts, getSellerProducts } from '../services/product.api'
+import { setEditProduct, setError, setLoading, setProducts, setSellerProducts, setSellerProductToList } from '../product.slice'
+import { addProduct, editProduct, getAllProducts, getProductDetails, getSellerProducts, addVariant } from '../services/product.api'
 
 const useProduct = () => {
 
@@ -62,10 +62,76 @@ const useProduct = () => {
         }
     }
 
+    const handleEditProduct = async (productDetails) => {
+        dispatch(setLoading(true))
+
+        try {
+            const res = await editProduct(productDetails)
+            dispatch(setEditProduct(res.product))
+            return {
+                success: true,
+                message: res.message,
+                product: res.product
+            }
+        } catch (err) {
+            const message = err?.response?.data?.message || err.message
+            dispatch(setError(message))
+            return {
+                success: false,
+                message
+            }
+        } finally {
+            dispatch(setLoading(false))
+        }
+    }
+
+    const handleFetchProductDetails = async (productId) => {
+        dispatch(setLoading(true))
+        
+        try {
+            const res = await getProductDetails(productId)
+            dispatch(setLoading(false))
+            return {
+                success: true,
+                message: res.message,
+                productDetail: res.product
+            }
+        } catch (err) {
+            dispatch(setError(err.message))
+        } finally {
+            dispatch(setLoading(false))
+        }
+    }
+
+    const handleCreateVariant = async (productId, formData) => {
+        dispatch(setLoading(true))
+        try {
+            const res = await addVariant(productId, formData)
+            dispatch(setEditProduct(res.product))
+            return {
+                success: true,
+                message: res.message,
+                product: res.product
+            }
+        } catch (err) {
+            const message = err?.response?.data?.message || err.message
+            dispatch(setError(message))
+            return {
+                success: false,
+                message
+            }
+        } finally {
+            dispatch(setLoading(false))
+        }
+    }
+
   return {
     handleAddProduct,
     handleGetSellerProduct,
-    handleGetAllProducts
+    handleGetAllProducts,
+    handleEditProduct,
+    handleFetchProductDetails,
+    handleCreateVariant
   }
 }
 

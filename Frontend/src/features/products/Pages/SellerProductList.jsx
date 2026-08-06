@@ -10,8 +10,6 @@ const SellerProductList = () => {
   useEffect(() => {
     handleGetSellerProduct();
   }, []);
-
-  console.log(sellerProduct);
   
   return (
     <div className="min-h-screen bg-white px-6 py-10 sm:px-8 lg:px-10">
