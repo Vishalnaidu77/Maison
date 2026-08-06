@@ -1,7 +1,7 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
-import { addItem, setLoading } from '../cart.slice'
-import { addItem as addItemToCart } from '../services/cart.service'
+import { addItem, setCart, setLoading } from '../cart.slice'
+import { addItem as addItemToCart, getCart } from '../services/cart.service'
 
 const useCart = () => {
 
@@ -12,6 +12,7 @@ const useCart = () => {
 
         try {
             const res = await addItemToCart(productId, variantId, quantity)
+            dispatch(setCart(res.cart))
             return res
         } catch (err) {
             return err.message
@@ -20,8 +21,22 @@ const useCart = () => {
         }
     }
 
+    const handleGetCart = async (userId) => {
+        dispatch(setLoading(true))
+
+        try {
+            const res = await getCart(userId);
+            dispatch(addItem(res.cart))
+        } catch (err) {
+            return err.message
+        } finally {
+            dispatch(setLoading(false))
+        }
+    }
+
   return {
-    handleAddItem
+    handleAddItem,
+    handleGetCart
   }
 }
 

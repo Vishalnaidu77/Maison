@@ -67,7 +67,8 @@ export async function addToCart (req, res){
     
         return res.status(200).json({
             message: "Product added to cart successfully",
-            success: true
+            success: true,
+            cart
         })
 
     } catch (err) {
@@ -80,17 +81,25 @@ export async function addToCart (req, res){
 }
 
 export async function getCart(req, res) {
-    const userId = req.userId
+    try {
+        const userId = req.userId
 
-    let cart = await cartModel.findOne({ user: userId })
+        let cart = await cartModel.findOne({ user: userId })
 
-    if(!cart){
-        cart = await cartModel.create({ user: userId })
+        if(!cart){
+            cart = await cartModel.create({ user: userId })
+        }
+
+        return res.status(200).json({
+            message: "Cart fetch successfully",
+            success: true,
+            cart
+        })
+    } catch (err) {
+        return res.status(400).json({
+            message: "Unexpected error",
+            success: false,
+            err: err.message
+        })
     }
-
-    return res.status(200).json({
-        message: "Cart fetch successfully",
-        success: true,
-        cart
-    })
 }

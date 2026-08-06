@@ -11,3 +11,8 @@ export const addItem = async (productId, variantId, quantity) => {
     })
     return res.data
 }
+
+export const getCart = async (userId) => {
+    const res = await cartApiInstance.get("/")
+    return res.data
+}

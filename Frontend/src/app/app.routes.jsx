@@ -7,6 +7,7 @@ import Protected from "./Protected";
 import Home from "../features/products/Pages/Home";
 import ProductDetails from "../features/products/Pages/ProductDetails";
 import EditProduct from "../features/products/Pages/EditProduct";
+import Cart from "../features/cart/pages/Cart";
 
 export const router = createBrowserRouter([
     {
@@ -42,5 +43,9 @@ export const router = createBrowserRouter([
         element: <Protected role="seller">
             <EditProduct />
         </Protected>
+    },
+    {
+        path: "/cart",
+        element: <Cart />
     }
 ])

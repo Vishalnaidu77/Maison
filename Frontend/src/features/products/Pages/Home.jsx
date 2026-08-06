@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import useProduct from '../hooks/useProduct';
 import ProductCard from '../components/ProductCard';
 
@@ -48,6 +48,8 @@ const Home = () => {
       setEmail('');
     }
   };
+
+  const navigate = useNavigate()
 
   return (
     <div className="min-h-screen bg-white font-sans text-gray-900 antialiased selection:bg-black selection:text-white">
@@ -107,7 +109,9 @@ const Home = () => {
               </Link>
             )}
 
-            <button className="relative p-1 text-gray-900 hover:opacity-75 transition-opacity" aria-label="Cart">
+            <button 
+            onClick={() => navigate("/cart")}
+            className="relative p-1 text-gray-900 hover:opacity-75 transition-opacity" aria-label="Cart">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
                 <line x1="3" x2="21" y1="6" y2="6"/>
