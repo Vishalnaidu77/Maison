@@ -18,7 +18,13 @@ export const getCart = async () => {
 }
 
 export const increamentQuantity = async (productId, variantId) => {
-    const res = await cartApiInstance.patch(`/${productId}/${variantId}`)
+    const res = await cartApiInstance.patch(`/increament/${productId}/${variantId}`)
+
+    return res.data
+}
+
+export const decreamentQuantity = async (productId, variantId) => {
+    const res = await cartApiInstance.patch(`/decreament/${productId}/${variantId}`)
 
     return res.data
 }

@@ -1,7 +1,7 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
-import { addItem, increamentCartQuantity, setCart, setLoading } from '../cart.slice'
-import { addItem as addItemToCart, getCart, increamentQuantity } from '../services/cart.service'
+import { addItem, decreamentCartQuantity, increamentCartQuantity, setCart, setLoading } from '../cart.slice'
+import { addItem as addItemToCart, decreamentQuantity, getCart, increamentQuantity } from '../services/cart.service'
 
 const useCart = () => {
 
@@ -34,12 +34,25 @@ const useCart = () => {
         }
     }
 
-    const handleIncreamentQuantity = async (product, variant) => {
+    const handleIncreamentQuantity = async (productId, variantId) => {
         dispatch(setLoading(true))
 
         try {
-            const res = await increamentQuantity(product, variant)
-            dispatch(increamentCartQuantity({ product, variant }))
+            const res = await increamentQuantity(productId, variantId)
+            dispatch(increamentCartQuantity({ productId, variantId }))
+        } catch (err) {
+            return err.message
+        } finally {
+            dispatch(setLoading(false))
+        }
+    }
+
+    const handleDecreamentQuantity = async (productId, variantId) => {
+        dispatch(setLoading(true))
+
+        try {
+            const res = await decreamentQuantity(productId, variantId)
+            dispatch(decreamentCartQuantity({ productId, variantId }))
         } catch (err) {
             return err.message
         } finally {
@@ -50,7 +63,8 @@ const useCart = () => {
   return {
     handleAddItem,
     handleGetCart,
-    handleIncreamentQuantity
+    handleIncreamentQuantity,
+    handleDecreamentQuantity
   }
 }
 
