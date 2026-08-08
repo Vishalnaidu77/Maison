@@ -1,7 +1,7 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
 import { addItem, decreamentCartQuantity, increamentCartQuantity, setCart, setLoading } from '../cart.slice'
-import { addItem as addItemToCart, decreamentQuantity, getCart, increamentQuantity } from '../services/cart.service'
+import { addItem as addItemToCart, createOrder, decreamentQuantity, getCart, increamentQuantity } from '../services/cart.service'
 
 const useCart = () => {
 
@@ -60,11 +60,17 @@ const useCart = () => {
         }
     }
 
+    const handleCreateOrder = async () => {
+        const res = await createOrder()
+        return res
+    }
+
   return {
     handleAddItem,
     handleGetCart,
     handleIncreamentQuantity,
-    handleDecreamentQuantity
+    handleDecreamentQuantity,
+    handleCreateOrder
   }
 }
 

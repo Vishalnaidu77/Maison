@@ -1,7 +1,9 @@
-import mongoose from "mongoose";
 import { stockOfVariant } from "../dao/product.dao.js";
 import { cartModel } from "../models/cart.model.js";
 import { productModel } from "../models/product.model.js";
+import { getCartDetails } from "../dao/cart.dao.js";
+import { createOrder } from "../services/payment.service.js";
+import { paymentModel } from "../models/payment.model.js";
 
 export async function addToCart (req, res){
     try {
@@ -83,64 +85,7 @@ export async function getCart(req, res) {
     try {
         const userId = req.userId
 
-        let cart = await cartModel.aggregate([
-            {
-                '$match': {
-                'user': new mongoose.Types.ObjectId(userId)
-                }
-            }, {
-                '$unwind': {
-                'path': '$items'
-                }
-            }, {
-                '$lookup': {
-                'from': 'products', 
-                'localField': 'items.product', 
-                'foreignField': '_id', 
-                'as': 'items.product'
-                }
-            }, {
-                '$unwind': {
-                'path': '$items.product'
-                }
-            }, {
-                '$unwind': {
-                'path': '$items.product.variants'
-                }
-            }, {
-                '$match': {
-                '$expr': {
-                    '$eq': [
-                    '$items.variant', '$items.product.variants._id'
-                    ]
-                }
-                }
-            }, {
-                '$addFields': {
-                'itemPrice': {
-                    'amount': {
-                    '$multiply': [
-                        '$items.quantity', '$items.product.variants.price.amount'
-                    ]
-                    }, 
-                    'currency': '$items.product.variants.price.currency'
-                }
-                }
-            }, {
-                '$group': {
-                '_id': '_id', 
-                'itemTotal': {
-                    '$sum': '$itemPrice.amount'
-                }, 
-                'currency': {
-                    '$first': '$itemPrice.currency'
-                }, 
-                'items': {
-                    '$push': '$items'
-                }
-                }
-            }
-        ])
+        const cart = await getCartDetails(userId)
 
         if(!cart){
             cart = await cartModel.create({ user: userId })
@@ -149,7 +94,7 @@ export async function getCart(req, res) {
         return res.status(200).json({
             message: "Cart fetch successfully",
             success: true,
-            cart: cart[0]
+            cart: cart
         })
 
     } catch (err) {
@@ -278,4 +223,39 @@ export async function decreamentQuantity(req, res){
             err: err.message
         })
     }
+}
+
+export async function createOrderController(req, res){
+    const userId = req.userId
+    const cart = await getCartDetails(userId)
+
+    const order = await createOrder({ amount: cart.itemTotal, currency: cart.currency})
+
+    const payment = await paymentModel.create({
+        user: userId,
+        price: {
+            amount: cart.itemTotal,
+            currency: cart.currency
+        },
+        razorpay: {
+            orderId: order.id
+        },
+        orderItems: cart.items.map(item => ({
+            title: item.product.title,
+            description: item.product.description,
+            productId: item.product._id,
+            variantId: item.variant,
+            quantity: item.quantity,
+            images: item.product.variants.images || item.product.images,
+            price: {
+                amount: item.product.variants.price.amount || item.product.price.amount,
+                currency: item.product.variants.price.currency || item.product.price.currency
+            }
+        }))
+    })
+
+    res.status(200).json({
+        message: "Order create successfully",
+        order
+    })
 }

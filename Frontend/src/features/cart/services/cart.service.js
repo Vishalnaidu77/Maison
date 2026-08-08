@@ -28,3 +28,8 @@ export const decreamentQuantity = async (productId, variantId) => {
 
     return res.data
 }
+
+export const createOrder = async () => {
+    const res  = await cartApiInstance.post("/payment/create/order/")
+    return res.data
+}

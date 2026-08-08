@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 import useCart from '../hooks/useCart'
+import { useRazorpay } from 'react-razorpay'
 
 const Cart = () => {
   const navigate = useNavigate();
@@ -10,7 +11,7 @@ const Cart = () => {
   // state.cart.items is always a flat array of cart-item objects (set by setCart reducer)
   const cartItems = useSelector(state => state.cart.items) || [];
 
-  const { handleGetCart, handleIncreamentQuantity, handleDecreamentQuantity } = useCart()
+  const { handleGetCart, handleIncreamentQuantity, handleDecreamentQuantity, handleCreateOrder } = useCart()
 
   useEffect(() => {
     if (!user) return;
@@ -26,6 +27,37 @@ const Cart = () => {
   const currency = cartItems[0]?.price?.currency || 'INR';
   const shipping = subtotalValue > 5000 || subtotalValue === 0 ? 0 : 80;
   const total = (subtotalValue + shipping).toFixed(2);
+
+  const { error, isLoading, Razorpay } = useRazorpay()
+
+  const handleCartOrder = async () => {
+    const order = await handleCreateOrder()
+    console.log(order);
+
+    const options = {
+      key: "rzp_test_TNKvnCYNznRb3x",
+      amount: order.amount, // Amount in paise
+      currency: order.currency,
+      name: "Maison",
+      description: "Test Transaction",
+      order_id: order.id, // Generate order_id on server
+      handler: (response) => {
+        console.log(response);
+        alert("Payment Successful!");
+      },
+      prefill: {
+        name: user.fullname,
+        email: user.email,
+        contact: user?.contact?.number,
+      },
+      theme: {
+        color: "#F37254",
+      },
+    };
+
+    const razorpayInstance = new Razorpay(options);
+    razorpayInstance.open();
+  }
 
   return (
     <div className="min-h-screen bg-white font-sans text-gray-900 antialiased selection:bg-black selection:text-white flex flex-col">
@@ -185,7 +217,7 @@ const Cart = () => {
                   <span className="text-xl font-light text-gray-900">{currency} {total}</span>
                 </div>
 
-                <button className="w-full bg-black text-white py-4 rounded-xl text-xs uppercase tracking-widest font-light hover:bg-gray-800 transition-all active:scale-[0.99] flex justify-center items-center gap-2">
+                <button onClick={handleCartOrder} className="w-full bg-black text-white py-4 rounded-xl text-xs uppercase tracking-widest font-light hover:bg-gray-800 transition-all active:scale-[0.99] flex justify-center items-center gap-2">
                   Proceed to Checkout
                   <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" /></svg>
                 </button>
@@ -196,7 +228,6 @@ const Cart = () => {
                 </div>
               </div>
             </div>
-
           </div>
         )}
       </main>
