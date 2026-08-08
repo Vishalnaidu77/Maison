@@ -1,41 +1,27 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 import useCart from '../hooks/useCart'
-import useProduct from '../../products/hooks/useProduct'
 
 const Cart = () => {
   const navigate = useNavigate();
   const user = useSelector(state => state.auth.user)
-  
-  // Handle case where cartItems might be the whole cart object or an array of items
-  const cartState = useSelector(state => state.cart.items);
-  const cartItems = Array.isArray(cartState) && cartState[0]?.items 
-    ? cartState[0].items 
-    : (cartState?.items || (Array.isArray(cartState) ? cartState : []));
 
-  console.log(cartItems); 
+  // state.cart.items is always a flat array of cart-item objects (set by setCart reducer)
+  const cartItems = useSelector(state => state.cart.items) || [];
 
-  const products = useSelector(state => state.product.products) || [];
   const { handleGetCart, handleIncreamentQuantity, handleDecreamentQuantity } = useCart()
-  const { handleGetAllProducts } = useProduct()
 
   useEffect(() => {
-    if(!user) return;
+    if (!user) return;
     handleGetCart()
   }, [user])
 
-  useEffect(() => {
-    if (products.length === 0) {
-      handleGetAllProducts();
-    }
-  }, [products.length])
-
-  // Calculate totals
+  // New response: item.price.amount is the per-unit price for that variant
   const subtotalValue = cartItems.reduce((acc, item) => {
     return acc + (item?.price?.amount || 0) * (item?.quantity || 1);
   }, 0);
-  
+
   const subtotal = subtotalValue.toFixed(2);
   const currency = cartItems[0]?.price?.currency || 'INR';
   const shipping = subtotalValue > 5000 || subtotalValue === 0 ? 0 : 80;
@@ -92,18 +78,26 @@ const Cart = () => {
 
               <div className="space-y-6">
                 {cartItems.map((item, idx) => {
-                  const product = products.find(p => p._id === item.product);
-                  const variant = product?.variants?.find(v => v._id === item.variant);
+                  // item.product is now the full populated product object
+                  // item.product.variants is the single matched variant object (not an array)
+                  const product = item.product;
+                  const variant = product?.variants; // single variant object from the aggregate $unwind
                   
-                  // Safe fallback if product data is not loaded yet
+                  // Prefer variant images, fall back to product images
+                  const image = variant?.images?.[0]?.url || product?.images?.[0]?.url;
+
+                  // Variant attributes like { Colour: "Blue", Size: "XL" }
+                  const variantDesc = variant?.attributes
+                    ? Object.entries(variant.attributes).map(([k, v]) => `${k}: ${v}`).join(' · ')
+                    : '';
+
+                  // Per-item line total
+                  const itemTotal = ((item?.price?.amount || 0) * (item?.quantity || 1)).toFixed(2);
+
                   if (!product) return null;
 
-                  const image = variant?.images?.[0]?.url || product?.images?.[0]?.url;
-                  const itemTotal = ((item?.price?.amount || 0) * (item?.quantity || 1)).toFixed(2)
-                  const variantDesc = variant ? Object.entries(variant.attributes || {}).map(([k, v]) => `${v}`).join(', ') : '';
-
                   return (
-                    <div key={idx} className="flex flex-col sm:grid sm:grid-cols-12 sm:items-center gap-6 py-6 border-b border-gray-50">
+                    <div key={item._id || idx} className="flex flex-col sm:grid sm:grid-cols-12 sm:items-center gap-6 py-6 border-b border-gray-50">
                       
                       {/* Product Info */}
                       <div className="col-span-6 flex items-center gap-6">
@@ -131,11 +125,19 @@ const Cart = () => {
                       {/* Quantity Controls */}
                       <div className="col-span-3 flex items-center justify-start sm:justify-center">
                         <div className="flex h-9 w-28 items-center justify-between rounded-lg border border-gray-200 px-2.5 bg-white">
-                          <button onClick={() => handleDecreamentQuantity(item.product, item.variant)} className="p-1 text-gray-400 hover:text-black transition-colors" aria-label="Decrease quantity">
+                          <button
+                            onClick={() => handleDecreamentQuantity(product._id, variant?._id)}
+                            className="p-1 text-gray-400 hover:text-black transition-colors"
+                            aria-label="Decrease quantity"
+                          >
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12" /></svg>
                           </button>
                           <span className="text-xs font-light text-gray-900 w-6 text-center">{item.quantity}</span>
-                          <button onClick={() => handleIncreamentQuantity(item.product, item.variant)} className="p-1 text-gray-400 hover:text-black transition-colors" aria-label="Increase quantity">
+                          <button
+                            onClick={() => handleIncreamentQuantity(product._id, variant?._id)}
+                            className="p-1 text-gray-400 hover:text-black transition-colors"
+                            aria-label="Increase quantity"
+                          >
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
                           </button>
                         </div>
@@ -173,7 +175,7 @@ const Cart = () => {
                   </div>
                   {shipping > 0 && (
                     <div className="text-[10px] text-gray-400">
-                      Free shipping on orders over {currency} 10000
+                      Free shipping on orders over {currency} 5000
                     </div>
                   )}
                 </div>

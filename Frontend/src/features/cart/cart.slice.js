@@ -20,7 +20,9 @@ const cartSlice = createSlice({
             const items = Array.isArray(state.items) ? state.items : (state.items?.items || []);
 
             state.items = items.map(item => {
-                if(item.product === productId && item.variant === variantId){
+                const itemProductId = item.product?._id?.toString() || item.product?.toString()
+                const itemVariantId = item.variant?.toString()
+                if(itemProductId === productId.toString() && itemVariantId === variantId.toString()){
                     return { ...item, quantity: item.quantity + 1 }
                 } else {
                     return item
@@ -32,7 +34,9 @@ const cartSlice = createSlice({
 
             const items = Array.isArray(state.items) ? state.items : (state.items?.items || [])
             state.items = items.map(item => {
-                if(item.product === productId && item.variant === variantId){
+                const itemProductId = item.product?._id?.toString() || item.product?.toString()
+                const itemVariantId = item.variant?.toString()
+                if(itemProductId === productId.toString() && itemVariantId === variantId.toString()){
                     return { ...item, quantity: item.quantity - 1 }
                 } else {
                     return item
@@ -42,6 +46,7 @@ const cartSlice = createSlice({
         setLoading: (state, action) => {
             state.loading = action.payload
         }
+        
     }
 })
 

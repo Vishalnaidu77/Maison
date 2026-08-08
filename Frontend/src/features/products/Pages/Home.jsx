@@ -11,6 +11,7 @@ const Home = () => {
   const [activeCategory, setActiveCategory] = useState('All');
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
+  const cartItems = useSelector(state => state.cart.items)
 
   useEffect(() => {
     handleGetAllProducts();
@@ -118,7 +119,7 @@ const Home = () => {
                 <path d="M16 10a4 4 0 0 1-8 0"/>
               </svg>
               <span className="absolute -right-1.5 -top-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-black text-[8px] font-light text-white">
-                0
+                {cartItems.length}
               </span>
             </button>
           </div>

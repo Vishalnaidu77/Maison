@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { stockOfVariant } from "../dao/product.dao.js";
 import { cartModel } from "../models/cart.model.js";
 import { productModel } from "../models/product.model.js";
@@ -82,7 +83,64 @@ export async function getCart(req, res) {
     try {
         const userId = req.userId
 
-        let cart = await cartModel.findOne({ user: userId })
+        let cart = await cartModel.aggregate([
+            {
+                '$match': {
+                'user': new mongoose.Types.ObjectId(userId)
+                }
+            }, {
+                '$unwind': {
+                'path': '$items'
+                }
+            }, {
+                '$lookup': {
+                'from': 'products', 
+                'localField': 'items.product', 
+                'foreignField': '_id', 
+                'as': 'items.product'
+                }
+            }, {
+                '$unwind': {
+                'path': '$items.product'
+                }
+            }, {
+                '$unwind': {
+                'path': '$items.product.variants'
+                }
+            }, {
+                '$match': {
+                '$expr': {
+                    '$eq': [
+                    '$items.variant', '$items.product.variants._id'
+                    ]
+                }
+                }
+            }, {
+                '$addFields': {
+                'itemPrice': {
+                    'amount': {
+                    '$multiply': [
+                        '$items.quantity', '$items.product.variants.price.amount'
+                    ]
+                    }, 
+                    'currency': '$items.product.variants.price.currency'
+                }
+                }
+            }, {
+                '$group': {
+                '_id': '_id', 
+                'itemTotal': {
+                    '$sum': '$itemPrice.amount'
+                }, 
+                'currency': {
+                    '$first': '$itemPrice.currency'
+                }, 
+                'items': {
+                    '$push': '$items'
+                }
+                }
+            }
+        ])
 
         if(!cart){
             cart = await cartModel.create({ user: userId })
@@ -91,8 +149,9 @@ export async function getCart(req, res) {
         return res.status(200).json({
             message: "Cart fetch successfully",
             success: true,
-            cart
+            cart: cart[0]
         })
+
     } catch (err) {
         return res.status(400).json({
             message: "Unexpected error",
