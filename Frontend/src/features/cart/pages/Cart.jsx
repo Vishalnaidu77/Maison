@@ -11,7 +11,7 @@ const Cart = () => {
   // state.cart.items is always a flat array of cart-item objects (set by setCart reducer)
   const cartItems = useSelector(state => state.cart.items) || [];
 
-  const { handleGetCart, handleIncreamentQuantity, handleDecreamentQuantity, handleCreateOrder } = useCart()
+  const { handleGetCart, handleIncreamentQuantity, handleDecreamentQuantity, handleCreateOrder, handleVerifyOrder } = useCart()
 
   useEffect(() => {
     if (!user) return;
@@ -31,7 +31,7 @@ const Cart = () => {
   const { error, isLoading, Razorpay } = useRazorpay()
 
   const handleCartOrder = async () => {
-    const order = await handleCreateOrder()
+    const { order } = await handleCreateOrder()
     console.log(order);
 
     const options = {
@@ -41,9 +41,11 @@ const Cart = () => {
       name: "Maison",
       description: "Test Transaction",
       order_id: order.id, // Generate order_id on server
-      handler: (response) => {
-        console.log(response);
-        alert("Payment Successful!");
+      handler: async (response) => {
+        const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = response;
+
+        const res = await handleVerifyOrder(razorpay_order_id, razorpay_payment_id, razorpay_signature)
+        console.log(res)
       },
       prefill: {
         name: user.fullname,

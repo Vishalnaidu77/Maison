@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { verifyUser } from '../middleware/auth.middleware.js'
-import { addToCart, createOrderController, decreamentQuantity, getCart, increamentQuantity } from '../controllers/cart.controller.js'
+import { addToCart, createOrderController, decreamentQuantity, getCart, increamentQuantity, verifyPaymentController } from '../controllers/cart.controller.js'
 
 const cartRouter = Router()
 
@@ -11,5 +11,6 @@ cartRouter.patch("/decreament/:productId/:variantId", verifyUser, decreamentQuan
 
 // Create orders
 cartRouter.post("/payment/create/order", verifyUser, createOrderController)
+cartRouter.post("/payment/verify/order", verifyUser, verifyPaymentController)
 
 export default cartRouter

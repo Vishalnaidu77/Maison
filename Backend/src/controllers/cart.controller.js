@@ -4,6 +4,8 @@ import { productModel } from "../models/product.model.js";
 import { getCartDetails } from "../dao/cart.dao.js";
 import { createOrder } from "../services/payment.service.js";
 import { paymentModel } from "../models/payment.model.js";
+import { validatePaymentVerification } from "razorpay/dist/utils/razorpay-utils.js";
+import { config } from "../config/config.js";
 
 export async function addToCart (req, res){
     try {
@@ -257,5 +259,46 @@ export async function createOrderController(req, res){
     res.status(200).json({
         message: "Order create successfully",
         order
+    })
+}
+
+export async function verifyPaymentController (req, res){
+    const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = req.body;
+
+    const payment = await paymentModel.findOne({
+        "razorpay.orderId": razorpay_order_id,
+        status: "pending"
+    })
+
+    if(!payment){
+        return res.status(404).json({
+            message: "Payment not found",
+            success: false,
+            err: "Payment not found"
+        })
+    }
+
+    const isPaymentValid = validatePaymentVerification({
+        payment_id: razorpay_payment_id,
+        order_id: razorpay_order_id
+    }, razorpay_signature, config.RAZORPAY_KEY_SECRET)
+
+    if(!isPaymentValid){
+        return res.status(400).json({
+            message: "Payment not verified",
+            success: false,
+            err: "Payment not verified"
+        })
+    }
+
+    payment.status = "paid"
+    payment.razorpay.paymentId = razorpay_payment_id
+    payment.razorpay.signature = razorpay_signature
+
+    await payment.save()
+
+    return res.status(200).json({
+        message: "Payment verified successfully",
+        success: true
     })
 }

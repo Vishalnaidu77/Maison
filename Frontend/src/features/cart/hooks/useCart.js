@@ -1,7 +1,7 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
 import { addItem, decreamentCartQuantity, increamentCartQuantity, setCart, setLoading } from '../cart.slice'
-import { addItem as addItemToCart, createOrder, decreamentQuantity, getCart, increamentQuantity } from '../services/cart.service'
+import { addItem as addItemToCart, createOrder, decreamentQuantity, getCart, increamentQuantity, verifyOrder } from '../services/cart.service'
 
 const useCart = () => {
 
@@ -65,12 +65,18 @@ const useCart = () => {
         return res
     }
 
+    const handleVerifyOrder = async (razorpay_order_id, razorpay_payment_id, razorpay_signature) => {
+        const res = await verifyOrder(razorpay_order_id, razorpay_payment_id, razorpay_signature)
+        return res
+    }
+
   return {
     handleAddItem,
     handleGetCart,
     handleIncreamentQuantity,
     handleDecreamentQuantity,
-    handleCreateOrder
+    handleCreateOrder,
+    handleVerifyOrder
   }
 }
 
