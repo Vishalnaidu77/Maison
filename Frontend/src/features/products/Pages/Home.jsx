@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import useProduct from '../hooks/useProduct';
 import ProductCard from '../components/ProductCard';
+import Navbar from '../../../components/Navbar';
 
 const Home = () => {
   const products = useSelector((state) => state.product.products) || [];
@@ -53,78 +54,9 @@ const Home = () => {
   const navigate = useNavigate()
 
   return (
-    <div className="min-h-screen bg-white font-sans text-gray-900 antialiased selection:bg-black selection:text-white">
+    <div className={`min-h-screen bg-white font-sans text-gray-900 antialiased selection:bg-black selection:text-white ${user?.role === 'seller' ? 'md:ml-64' : ''}`}>
       {/* 1. Header */}
-      <header className="sticky top-0 z-50 border-b border-gray-100 bg-white/85 backdrop-blur-md transition-all duration-300">
-        <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6 sm:px-8">
-          {/* Logo */}
-          <Link to="/" className="text-xl font-light tracking-[0.3em] uppercase text-gray-900 transition-opacity hover:opacity-80">
-            Maison
-          </Link>
-
-          {/* Navigation Links */}
-          <nav className="hidden md:flex items-center space-x-10">
-            <a href="#shop" className="text-xs font-light uppercase tracking-[0.2em] text-gray-500 hover:text-black transition-colors">
-              Shop
-            </a>
-            <a href="#collections" className="text-xs font-light uppercase tracking-[0.2em] text-gray-500 hover:text-black transition-colors">
-              Collections
-            </a>
-            <a href="#editorial" className="text-xs font-light uppercase tracking-[0.2em] text-gray-500 hover:text-black transition-colors">
-              Editorial
-            </a>
-            <a href="#newsletter" className="text-xs font-light uppercase tracking-[0.2em] text-gray-500 hover:text-black transition-colors">
-              Newsletter
-            </a>
-          </nav>
-
-          {/* User Controls */}
-          <div className="flex items-center space-x-6">
-            {user ? (
-              <div className="flex items-center space-x-4">
-                <span className="hidden sm:inline text-xs font-light text-gray-400">
-                  Welcome, <strong className="font-normal text-gray-900">{user.fullname}</strong>
-                </span>
-                {user.role === 'seller' ? (
-                  <Link 
-                    to="/seller/dashboard/products" 
-                    className="rounded-full bg-black px-4 py-1.5 text-[10px] font-light uppercase tracking-widest text-white transition-all hover:bg-gray-800 hover:scale-[1.02]"
-                  >
-                    Dashboard
-                  </Link>
-                ) : (
-                  <span className="rounded-full bg-gray-100 px-3 py-1 text-[10px] font-light uppercase tracking-widest text-gray-500">
-                    Buyer
-                  </span>
-                )}
-                <button 
-                  onClick={() => console.log('Dummy Logout triggered')}
-                  className="text-xs font-light text-gray-400 hover:text-black hover:underline underline-offset-4 transition-colors"
-                >
-                  Sign Out
-                </button>
-              </div>
-            ) : (
-              <Link to="/login" className="text-xs font-light uppercase tracking-[0.15em] text-gray-900 hover:opacity-80 transition-opacity">
-                Sign In
-              </Link>
-            )}
-
-            <button 
-            onClick={() => navigate("/cart")}
-            className="relative p-1 text-gray-900 hover:opacity-75 transition-opacity" aria-label="Cart">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
-                <line x1="3" x2="21" y1="6" y2="6"/>
-                <path d="M16 10a4 4 0 0 1-8 0"/>
-              </svg>
-              <span className="absolute -right-1.5 -top-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-black text-[8px] font-light text-white">
-                {cartItems.length}
-              </span>
-            </button>
-          </div>
-        </div>
-      </header>
+      <Navbar />
 
       {/* 2. Hero Banner */}
       <section className="relative h-[85vh] w-full overflow-hidden bg-gray-100">

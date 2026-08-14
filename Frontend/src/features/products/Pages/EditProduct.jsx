@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import useProduct from '../hooks/useProduct';
+import Navbar from '../../../components/Navbar';
 
 const currencyOptions = ['INR', 'USD', 'EUR', 'GBP', 'JPY'];
 
@@ -136,7 +137,7 @@ const EditProduct = () => {
   // Handle uploading variant image files
   const handleVariantImageChange = (e) => {
     const selectedFiles = Array.from(e.target.files || []);
-    const nextFiles = [...variantImages, ...selectedFiles].slice(0, 3);
+    const nextFiles = [...variantImages, ...selectedFiles].slice(0, 7);
     setVariantImages(nextFiles);
     e.target.value = '';
   };
@@ -248,9 +249,11 @@ const EditProduct = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white px-6 py-10 sm:px-8 lg:px-12">
-      <div className="mx-auto w-full max-w-6xl">
-        {/* Navigation & Header */}
+    <div className="min-h-screen bg-white">
+      <Navbar />
+      <div className="px-6 py-10 sm:px-8 lg:px-12 md:ml-64">
+        <div className="mx-auto w-full max-w-6xl">
+          {/* Navigation & Header */}
         <div className="mb-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-gray-100 pb-6">
           <div>
             <button
@@ -516,7 +519,7 @@ const EditProduct = () => {
                       </div>
 
                       <div className="relative">
-                        <span className="text-[10px] text-gray-400 font-light block mb-1">Variant Images (Max 3)</span>
+                        <span className="text-[10px] text-gray-400 font-light block mb-1">Variant Images (Max 7)</span>
                         <label className="flex items-center justify-center rounded-xl border border-dashed border-gray-300 bg-white px-4 py-2 text-center cursor-pointer hover:border-black transition-colors">
                           <input
                             type="file"
@@ -526,7 +529,7 @@ const EditProduct = () => {
                             className="hidden"
                             disabled={variantImages.length >= 3}
                           />
-                          <span className="text-xs font-light text-gray-600">Choose images ({variantImages.length}/3)</span>
+                          <span className="text-xs font-light text-gray-600">Choose images ({variantImages.length}/7)</span>
                         </label>
                       </div>
                     </div>
@@ -759,6 +762,7 @@ const EditProduct = () => {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 };

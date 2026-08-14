@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 import useCart from '../hooks/useCart'
 import { useRazorpay } from 'react-razorpay'
+import Navbar from '../../../components/Navbar'
 
 const Cart = () => {
   const navigate = useNavigate();
@@ -64,18 +65,7 @@ const Cart = () => {
   return (
     <div className="min-h-screen bg-white font-sans text-gray-900 antialiased selection:bg-black selection:text-white flex flex-col">
       {/* Header */}
-      <header className="h-20 shrink-0 border-b border-gray-100 bg-white/85 backdrop-blur-md sticky top-0 z-10 transition-all duration-300">
-        <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-6 sm:px-8">
-          <Link to="/" className="text-xl font-light tracking-[0.3em] uppercase text-gray-900 transition-opacity hover:opacity-80">
-            Maison
-          </Link>
-          <div className="flex items-center space-x-6">
-            <Link to="/#shop" className="text-xs font-light uppercase tracking-[0.15em] text-gray-900 border-b border-transparent hover:border-black pb-1 transition-colors">
-              Continue Shopping
-            </Link>
-          </div>
-        </div>
-      </header>
+      <Navbar />
 
       {/* Main Content */}
       <main className="flex-1 w-full max-w-7xl mx-auto px-6 py-12 sm:px-8">

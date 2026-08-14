@@ -4,6 +4,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import useProduct from '../hooks/useProduct';
 import ProductCard from '../components/ProductCard';
 import useCart from '../../cart/hooks/useCart';
+import Navbar from '../../../components/Navbar';
 
 const ProductDetails = () => {
   const { productId } = useParams();
@@ -117,16 +118,7 @@ const ProductDetails = () => {
     return (
       <div className="h-screen bg-white font-sans text-gray-900 antialiased flex flex-col overflow-hidden">
         {/* Header */}
-        <header className="h-20 shrink-0 border-b border-gray-100 bg-white/85 backdrop-blur-md">
-          <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-6 sm:px-8">
-            <Link to="/" className="text-xl font-light tracking-[0.3em] uppercase text-gray-900 hover:opacity-80 transition-opacity">
-              Maison
-            </Link>
-            <Link to="/" className="text-xs font-light uppercase tracking-[0.15em] text-gray-900 border-b border-black pb-1 hover:opacity-80 transition-opacity">
-              Back to Catalog
-            </Link>
-          </div>
-        </header>
+        <Navbar />
 
         {/* Not Found */}
         <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
@@ -154,22 +146,7 @@ const ProductDetails = () => {
   return (
     <div className="h-screen bg-white font-sans text-gray-900 antialiased selection:bg-black selection:text-white flex flex-col overflow-hidden">
       {/* 1. Header */}
-      <header className="h-20 shrink-0 border-b border-gray-100 bg-white/85 backdrop-blur-md transition-all duration-300">
-        <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-6 sm:px-8">
-          <Link to="/" className="text-xl font-light tracking-[0.3em] uppercase text-gray-900 transition-opacity hover:opacity-80">
-            Maison
-          </Link>
-          <div className="flex items-center space-x-6">
-             <button className="relative p-1 text-gray-900 hover:opacity-75 transition-opacity" aria-label="Cart">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
-                <line x1="3" x2="21" y1="6" y2="6" />
-                <path d="M16 10a4 4 0 0 1-8 0" />
-              </svg>
-            </button>
-          </div>
-        </div>
-      </header>
+      <Navbar />
 
       {/* 2. Main Product Content */}
       <main className="flex-1 min-h-0 overflow-hidden">

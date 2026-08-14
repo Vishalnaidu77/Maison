@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import useProduct from '../hooks/useProduct';
+import Navbar from '../../../components/Navbar';
 
 const currencyOptions = ['INR', 'USD', 'EUR', 'GBP', 'JPY'];
 
@@ -139,13 +140,11 @@ const CreateProduct = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white px-6 py-10 sm:px-8 lg:px-10 flex items-center justify-center">
-      <div className="w-full max-w-lg animate-in fade-in slide-in-from-bottom-4 duration-1000">
-        <div className="text-2xl font-light tracking-widest uppercase mb-10 text-center text-gray-900">
-          Maison
-        </div>
-
-        <h2 className="text-3xl font-light mb-2 text-gray-900 text-center">Create Product</h2>
+    <div className="min-h-screen bg-white flex flex-col">
+      <Navbar />
+      <div className="flex-1 px-6 py-10 sm:px-8 lg:px-10 flex items-center justify-center md:ml-64">
+        <div className="w-full max-w-lg animate-in fade-in slide-in-from-bottom-4 duration-1000">
+          <h2 className="text-3xl font-light mb-2 text-gray-900 text-center">Create Product</h2>
         <p className="text-gray-500 text-sm mb-10 font-light text-center">
           Keep the listing simple, clean, and complete.
         </p>
@@ -496,6 +495,7 @@ const CreateProduct = () => {
           </button>
         </form>
       </div>
+    </div>
     </div>
   );
 };
