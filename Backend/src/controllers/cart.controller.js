@@ -83,7 +83,6 @@ export async function addToCart (req, res){
     }
 }
 
-// This controller remove the product from the cart
 export async function removeFromCart(req, res){
     try {
         const { productId, variantId } = req.params;

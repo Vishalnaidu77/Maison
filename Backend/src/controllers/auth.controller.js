@@ -2,12 +2,18 @@ import userModel from "../models/user.model.js";
 import { config } from '../config/config.js'
 import jwt from 'jsonwebtoken'
 
+const authCookieOptions = {
+  httpOnly: true,
+  secure: config.NODE_ENV === "production",
+  sameSite: config.NODE_ENV === "production" ? "none" : "lax"
+}
+
 async function sendResToken(res, user, message){
     const token = jwt.sign({
         id: user._id
     }, config.JWT_SECRET, { expiresIn: "7d" })
 
-    res.cookie("token", token)
+    res.cookie("token", token, authCookieOptions)
 
     res.status(200).json({
       message,
@@ -107,9 +113,9 @@ export async function googleCallback(req, res) {
     id: user._id
   }, config.JWT_SECRET)
 
-  res.cookie("token", token)
+  res.cookie("token", token, authCookieOptions)
 
-  res.redirect("http://localhost:5173/")
+  res.redirect("https://maison-alpha-woad.vercel.app/")
 }
 
 export async function getMeController(req, res) {

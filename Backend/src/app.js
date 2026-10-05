@@ -17,7 +17,7 @@ app.use(CookieParser())
 app.use(express.urlencoded({ extended: true }));
 app.use(passport.initialize())
 app.use(cors({
-	origin: "http://localhost:5173",
+	origin: "https://maison-alpha-woad.vercel.app",
 	credentials: true
 }))
 
