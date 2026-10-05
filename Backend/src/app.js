@@ -24,7 +24,7 @@ app.use(cors({
 passport.use(new GoogleStrategy({
 	clientID: config.CLIENT_ID,
 	clientSecret: config.CLIENT_SECRET,
-	callbackURL: "/api/auth/google/callback"
+	callbackURL: "https://maison-tr08.onrender.com/api/auth/google/callback"
 }, (accessToken, refreshToken, profile, done) => {
 	return done(null, profile)
 }))
