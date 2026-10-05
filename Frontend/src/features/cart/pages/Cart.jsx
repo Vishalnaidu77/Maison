@@ -12,7 +12,7 @@ const Cart = () => {
   // state.cart.items is always a flat array of cart-item objects (set by setCart reducer)
   const cartItems = useSelector(state => state.cart.items) || [];
 
-  const { handleGetCart, handleIncreamentQuantity, handleDecreamentQuantity, handleCreateOrder, handleVerifyOrder } = useCart()
+  const { handleGetCart, handleIncreamentQuantity, handleDecreamentQuantity, handleCreateOrder, handleVerifyOrder, handleRemoveItem  } = useCart()
 
   useEffect(() => {
     if (!user) return;
@@ -172,7 +172,7 @@ const Cart = () => {
                         <span className="hidden sm:block text-sm font-light text-gray-900">
                           {currency} {itemTotal}
                         </span>
-                        <button className="text-[10px] uppercase tracking-widest text-gray-400 hover:text-red-500 transition-colors border-b border-transparent hover:border-red-500 pb-0.5">
+                        <button onClick={() => handleRemoveItem(product._id, variant?._id)} className="text-[10px] uppercase tracking-widest text-gray-400 hover:text-red-500 transition-colors cursor-pointer border-b border-transparent hover:border-red-500 pb-0.5">
                           Remove
                         </button>
                       </div>

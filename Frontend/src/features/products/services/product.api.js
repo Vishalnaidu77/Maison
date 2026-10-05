@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const productApiInstance = axios.create({
-    baseURL: "/api/product",
+    baseURL: "http://localhost:8000/api/product",
     withCredentials: true,
 })
 

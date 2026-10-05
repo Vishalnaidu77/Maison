@@ -18,7 +18,7 @@ const SellerProductList = () => {
       <div className="px-6 py-10 sm:px-8 lg:px-10 md:ml-64">
         <div className="mx-auto w-full max-w-6xl">
           <div className="mb-10 text-center">
-            <h1 className="text-3xl sm:text-4xl font-light text-gray-900">Seller Products</h1>
+            <h1 className="text-3xl sm:text-4xl font-light text-gray-900">Your Products</h1>
             <p className="mt-3 text-sm font-light text-gray-500">
               A quiet overview of the products you have added.
             </p>

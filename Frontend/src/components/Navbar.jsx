@@ -22,7 +22,9 @@ const Navbar = () => {
     navigate('/login');
   };
 
-  const totalCartCount = Array.isArray(cartItems) ? cartItems.length : 0;
+  const totalCartCount = Array.isArray(cartItems)
+    ? cartItems.reduce((sum, item) => sum + (Number(item?.quantity) || 0), 0)
+    : 0;
 
   // Navigation Links
   const navLinks = [
@@ -71,17 +73,13 @@ const Navbar = () => {
               <span className="hidden lg:inline text-xs font-light text-gray-400">
                 Welcome, <strong className="font-normal text-gray-900">{user.fullname}</strong>
               </span>
-              {user.role === 'seller' ? (
+              {user.role === 'seller' && (
                 <Link
                   to="/seller/dashboard/products"
                   className="rounded-full bg-black px-3.5 py-1.5 text-[10px] font-light uppercase tracking-widest text-white transition-all hover:bg-gray-800 hover:scale-[1.02]"
                 >
                   Dashboard
                 </Link>
-              ) : (
-                <span className="hidden sm:inline-block rounded-full bg-gray-100 px-3 py-1 text-[10px] font-light uppercase tracking-widest text-gray-500">
-                  Buyer
-                </span>
               )}
               <button
                 onClick={handleSignOut}

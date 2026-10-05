@@ -9,6 +9,7 @@ import ProductDetails from "../features/products/Pages/ProductDetails";
 import EditProduct from "../features/products/Pages/EditProduct";
 import Cart from "../features/cart/pages/Cart";
 import SellerUsers from "../features/products/Pages/SellerUsers";
+import SellerAnalytics from "../features/products/Pages/SellerAnalytics";
 
 export const router = createBrowserRouter([
     {
@@ -33,6 +34,18 @@ export const router = createBrowserRouter([
         path: "/seller/dashboard/products",
         element: <Protected role="seller">
                 <SellerProductList />
+            </Protected>
+    },
+    {
+        path: "/seller/dashboard",
+        element: <Protected role="seller">
+                <SellerAnalytics />
+            </Protected>
+    },
+    {
+        path: "/seller/dashboard/analytics",
+        element: <Protected role="seller">
+                <SellerAnalytics />
             </Protected>
     },
     {

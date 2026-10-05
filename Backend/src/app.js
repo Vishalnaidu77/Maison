@@ -7,6 +7,7 @@ import { config } from "./config/config.js";
 import productRouter from "./routes/product.route.js";
 import CookieParser from 'cookie-parser'
 import cartRouter from "./routes/cart.routes.js";
+import cors from "cors";
 
 const app = express();
 
@@ -15,6 +16,10 @@ app.use(express.json());
 app.use(CookieParser())
 app.use(express.urlencoded({ extended: true }));
 app.use(passport.initialize())
+app.use(cors({
+	origin: "http://localhost:5173",
+	credentials: true
+}))
 
 passport.use(new GoogleStrategy({
 	clientID: config.CLIENT_ID,

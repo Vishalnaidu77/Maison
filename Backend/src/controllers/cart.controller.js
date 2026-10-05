@@ -83,6 +83,63 @@ export async function addToCart (req, res){
     }
 }
 
+// This controller remove the product from the cart
+export async function removeFromCart(req, res){
+    try {
+        const { productId, variantId } = req.params;
+        const userId = req.userId;
+
+        const product = await productModel.findOne({
+            _id: productId,
+            "variants._id": variantId
+        });
+
+        if(!product){
+            return res.status(404).json({
+                message: "Product or variant not found",
+                success: false,
+                err: "Not found"
+            });
+        }
+
+        const cart = await cartModel.findOne({ user: userId });
+
+        if(!cart){
+            return res.status(400).json({
+                message: "No cart exist",
+                success: false,
+                err: "No cart exist"
+            });
+        }
+
+        const existingItem = cart.items.find(item => item.product.toString() === productId && item.variant.toString() === variantId);
+
+        if(!existingItem){
+            return res.status(404).json({
+                message: "Item not found in cart",
+                success: false,
+                err: "Item not found in cart"
+            });
+        }
+
+        cart.items = cart.items.filter(item => !(item.product.toString() === productId && item.variant.toString() === variantId));
+        await cart.save();
+
+        return res.status(200).json({
+            message: "Item removed from cart successfully",
+            success: true,
+            cart
+        });
+
+    } catch (err) {
+        return res.status(400).json({
+            message: "Unexpected error",
+            success: false,
+            err: err.message
+        });
+    }
+}
+
 export async function getCart(req, res) {
     try {
         const userId = req.userId
