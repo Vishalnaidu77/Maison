@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const productApiInstance = axios.create({
-    baseURL: "https://maison-tr08.onrender.com/api/product",
+    baseURL: "/api/product",
     withCredentials: true,
 })
 

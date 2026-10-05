@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const authApiInstance = axios.create({
-    baseURL: "https://maison-tr08.onrender.com/api/auth",
+    baseURL: "/api/auth",
     withCredentials: true
 })
 

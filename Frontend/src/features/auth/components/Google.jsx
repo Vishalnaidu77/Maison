@@ -3,7 +3,7 @@ import React from "react";
 export const Google = () => {
   return (
     <button
-      onClick={() => (window.location.href = "https://maison-tr08.onrender.com/api/auth/google")}
+      onClick={() => (window.location.href = "/api/auth/google")}
       className="w-full flex items-center justify-center gap-2 border border-gray-200 py-3 rounded-xl hover:bg-gray-50 transition-colors text-sm font-light group cursor-pointer"
     >
       <svg
